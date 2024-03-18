@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { User } from './class/user';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-// import Modal from 'bootstrap/js/dist/modal.js'
+import {FormControl, FormGroup } from '@angular/forms';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -12,26 +11,23 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 export class CrudComponent {
 
   //資料狀態
-  users = [
-        {id: 1, name:'Jani',country:'Norway', salary: 5, email: 'Guithay65@gustr.com'},
-        {id: 2, name:'Carl',country:'Sweden', salary: 24, email: 'cluphetret@hotmail.com'},
-        {id: 3, name:'Margareth',country:'England', salary: 5, email: 'phitrudreh@yahoo.com'},
-        {id: 4, name:'Hege',country:'Norway', salary: 15, email: 'thapripich@gmail.com'},
-        {id: 5, name:'Joe',country:'Denmark', salary: 20, email: 'qakyssaxisu-3687@yopmail.com'}
-        ];
-  tempData={
-    id:0 ,
-    name:'',
-    country:'', 
-    salary: 0, 
-    email: ""
-  }
+  originalUsers = [
+    {id: 1, name: 'Jani', country: 'Norway', salary: 5, email: 'Guithay65@gustr.com'},
+    {id: 2, name: 'Carl', country: 'Sweden', salary: 24, email: 'cluphetret@hotmail.com'},
+    {id: 3, name: 'Margareth', country: 'England', salary: 5, email: 'phitrudreh@yahoo.com'},
+    {id: 4, name: 'Hege', country: 'Norway', salary: 15, email: 'thapripich@gmail.com'},
+    {id: 5, name: 'Joe', country: 'Denmark', salary: 20, email: 'qakyssaxisu-3687@yopmail.com'}
+  ];
+
+  users= [...this.originalUsers] //淺拷貝與原始資料隔離
+
   isFormOpen:boolean=false
   isAddUser:boolean=false
   total:number=0
+  searchValue:string=""
   
   userForm = new FormGroup({
-    id:new FormControl<number>(0),
+    id:new FormControl<number>(0,),
     name:new FormControl<string>(''),
     country:new FormControl<string>(''),
     salary:new FormControl<number>(0),
@@ -39,17 +35,18 @@ export class CrudComponent {
   })
   
   //生命週期
-  constructor(){}
-  
+
   ngOnInit(): void {
     this.calcTotal()
   }
 
   ngDoCheck(): void {
     this.calcTotal()
+  
   }
+  
 
-  //函式
+  //函式/方法
   addUser(){
     const newUser = {
       id: this.users.length + 1, 
@@ -65,14 +62,35 @@ export class CrudComponent {
       this.userForm.reset()
   }
   
-  //待完成
   editUser(user:any){
     this.userForm.reset()
-    console.log(user)
+    this.userForm.patchValue({
+      id:user.id,
+      name:user.name,
+      country:user.country,
+      salary:user.salary,
+      email:user.email
+    })
   }
 
   confirmEdit(){
-    console.log(this.tempData)
+    const newUser = {
+      id: this.userForm.get('id')?.value ?? 0, 
+      name: this.userForm.get('name')?.value ?? '',
+      country: this.userForm.get('country')?.value ?? '',
+      salary: this.userForm.get('salary')?.value ?? 0,
+      email: this.userForm.get('email')?.value ?? ''
+    };
+
+    this.users.forEach((item,i)=>{
+      if(item.id == newUser.id){
+        this.users.splice(i,1,newUser)
+      }
+    })
+
+    this.isFormOpen = false
+    this.isAddUser = false
+    this.userForm.reset()
   }
 
   deleteUser(id:number){
@@ -91,4 +109,14 @@ export class CrudComponent {
     this.total = num
   }
   
+  filterBySearch(){
+    if(this.searchValue ===""){
+      this.users = [...this.originalUsers] 
+    }else{
+      const filteredUsers = this.users.filter(item => {
+      return item.name.toLowerCase().includes(this.searchValue.toLowerCase());
+    });
+    this.users = filteredUsers;
+    }
+  }
 }
