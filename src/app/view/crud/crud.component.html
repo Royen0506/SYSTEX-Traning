@@ -1,0 +1,87 @@
+<div class="container">
+    <div class="row mt-3 mt-lg-5 d-flex justify-content-center">
+        <div class="text-center col-12 col-lg-8">
+            <div class="d-flex">
+                <button (click)="isFormOpen = true; isAddUser = true; this.userForm.reset()"
+                    class="btn btn-success my-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                        <path
+                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                    </svg><span class="ms-1">Add more user</span></button>
+                <div class="ms-auto align-self-center">
+                    <div class="d-flex">
+                        <label class="align-self-center me-2 text-nowrap">Search by name:</label>
+                        <input type="text" class="form-control" placeholder="Type name to search" aria-label="Username"
+                            aria-describedby="basic-addon1">
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th class="fw-bold">Name</th>
+                        <th class="fw-bold">Country</th>
+                        <th class="fw-bold">Salary</th>
+                        <th class="fw-bold">Email</th>
+                        <th class="fw-bold"></th>
+                        <th class="fw-bold"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of users; let o = odd" [ngClass]="{'table-light': !o}">
+                        <td>{{item.name}}</td>
+                        <td>{{item.country}}</td>
+                        <td>{{item.salary}}</td>
+                        <td>{{item.email}}</td>
+                        <td><button class="btn btn-primary" (click)="isFormOpen = true; isAddUser = false;"
+                                (click)="editUser(item)">Edit</button>
+                        </td>
+                        <td><button class="btn btn-danger" (click)="deleteUser(item.id)">Delete</button></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-start border-bottom-0">Total</th>
+                        <th class="text-start border-bottom-0"></th>
+                        <th class="text-center border-bottom-0">{{total}}</th>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <form [formGroup]="userForm" *ngIf="isFormOpen">
+                <div class="h3 text-start" *ngIf="isAddUser; else editUser">Add User</div>
+                <ng-template #editUser>
+                    <div class="h3 text-start">Edit User</div>
+                </ng-template>
+                <div class="mb-3 text-start">
+                    <label for="userName" class="form-label fw-bold">Name</label>
+                    <input formControlName="name" [(ngModel)]="tempData.name" type="text" class="form-control"
+                        id="userName" placeholder="Edit name">
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="userCountry" class="form-label fw-bold">Country</label>
+                    <input formControlName="country" type="text" class="form-control" id="userCountry"
+                        placeholder="Edit country">
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="userSalary" class="form-label fw-bold">Salary</label>
+                    <input type="number" formControlName="salary" class="form-control" id="userSalary"
+                        placeholder="Edit Salary">
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="userEmail" class="form-label fw-bold">Email</label>
+                    <input formControlName="email" type="email" class="form-control" id="userEmail"
+                        placeholder="Edit Email">
+                </div>
+                <div class="text-start">
+                    <button *ngIf="isAddUser; else EditUserButton" class="btn btn-primary me-2" (click)="addUser()">Add
+                        User</button>
+                    <ng-template #EditUserButton><button class="btn btn-primary me-2" (click)="confirmEdit">Save
+                            Change</button></ng-template>
+                    <button class="btn btn-primary" (click)="isFormOpen = false">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
