@@ -6,20 +6,19 @@ import { AppComponent } from './app.component';
 import { CrudComponent } from './view/crud/crud.component';
 import { UiTrainingComponent } from './view/ui-training/ui-training.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CrudTableComponent } from './view/crud/components/crud-table/crud-table.component';
+import { CrudFormComponent } from './view/crud/components/crud-form/crud-form.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CrudComponent,
-    UiTrainingComponent
+    UiTrainingComponent,
+    CrudTableComponent,
+    CrudFormComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    ReactiveFormsModule,
-    FormsModule
-  ],
+  imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, FormsModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

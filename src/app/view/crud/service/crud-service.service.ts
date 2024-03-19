@@ -1,14 +1,9 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
 
-@Component({
-  selector: 'app-crud',
-  templateUrl: './crud.component.html',
-  // styleUrls: ['./crud.component.scss']
+@Injectable({
+  providedIn: 'root',
 })
-export class CrudComponent {
-  //資料狀態
+export class CrudServiceService {
   originalUsers = [
     {
       id: 1,
