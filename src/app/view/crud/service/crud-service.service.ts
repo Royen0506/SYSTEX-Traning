@@ -1,53 +1,18 @@
 import { Injectable } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CrudServiceService {
-  originalUsers = [
-    {
-      id: 1,
-      name: 'Jani',
-      country: 'Norway',
-      salary: 5,
-      email: 'Guithay65@gustr.com',
-    },
-    {
-      id: 2,
-      name: 'Carl',
-      country: 'Sweden',
-      salary: 24,
-      email: 'cluphetret@hotmail.com',
-    },
-    {
-      id: 3,
-      name: 'Margareth',
-      country: 'England',
-      salary: 5,
-      email: 'phitrudreh@yahoo.com',
-    },
-    {
-      id: 4,
-      name: 'Hege',
-      country: 'Norway',
-      salary: 15,
-      email: 'thapripich@gmail.com',
-    },
-    {
-      id: 5,
-      name: 'Joe',
-      country: 'Denmark',
-      salary: 20,
-      email: 'qakyssaxisu-3687@yopmail.com',
-    },
-  ];
+  public originalUsersData = new BehaviorSubject<any[]>([]);
+  public totalSalary = new BehaviorSubject<number>(0);
+  originalUsers$ = this.originalUsersData.asObservable();
 
-  users = [...this.originalUsers]; //淺拷貝與原始資料隔離
-
-  isFormOpen: boolean = false;
-  isAddUser: boolean = false;
-  total: number = 0;
-  searchValue: string = '';
+  public isFormOpen: boolean = false;
+  public isAddUser: boolean = false;
+  public searchValue: string = '';
 
   userForm = new FormGroup({
     id: new FormControl<number>(0),
@@ -58,40 +23,64 @@ export class CrudServiceService {
   });
 
   //生命週期
+  constructor() {
+    //創建時賦值
+    this.originalUsersData.next([
+      {
+        id: 1,
+        name: 'Jani',
+        country: 'Norway',
+        salary: 5,
+        email: 'Guithay65@gustr.com',
+      },
+      {
+        id: 2,
+        name: 'Carl',
+        country: 'Sweden',
+        salary: 24,
+        email: 'cluphetret@hotmail.com',
+      },
+      {
+        id: 3,
+        name: 'Margareth',
+        country: 'England',
+        salary: 5,
+        email: 'phitrudreh@yahoo.com',
+      },
+      {
+        id: 4,
+        name: 'Hege',
+        country: 'Norway',
+        salary: 15,
+        email: 'thapripich@gmail.com',
+      },
+      {
+        id: 5,
+        name: 'Joe',
+        country: 'Denmark',
+        salary: 20,
+        email: 'qakyssaxisu-3687@yopmail.com',
+      },
+    ]);
 
-  ngOnInit(): void {
-    this.calcTotal();
+    this.updateTotal();
   }
 
-  ngDoCheck(): void {
-    this.calcTotal();
-  }
-
-  //函式/方法
-  addUser() {
-    const newUser = {
-      id: this.users.length + 1,
-      name: this.userForm.get('name')?.value ?? '',
-      country: this.userForm.get('country')?.value ?? '',
-      salary: this.userForm.get('salary')?.value ?? 0,
-      email: this.userForm.get('email')?.value ?? '',
-    };
-
-    this.users.push(newUser);
-    this.isFormOpen = false;
-    this.isAddUser = false;
-    this.userForm.reset();
+  // 函式/方法
+  addUser(data: any) {
+    this.originalUsersData.value.push(data);
+    this.updateTotal();
   }
 
   editUser(user: any) {
-    this.userForm.reset();
-    this.userForm.patchValue({
-      id: user.id,
-      name: user.name,
-      country: user.country,
-      salary: user.salary,
-      email: user.email,
+    const updatedUsers = this.originalUsersData.value.map((item) => {
+      if (item.id === user.id) {
+        return user;
+      } else {
+        return item;
+      }
     });
+    this.originalUsersData.next(updatedUsers);
   }
 
   confirmEdit() {
@@ -103,11 +92,11 @@ export class CrudServiceService {
       email: this.userForm.get('email')?.value ?? '',
     };
 
-    this.users.forEach((item, i) => {
-      if (item.id == newUser.id) {
-        this.users.splice(i, 1, newUser);
-      }
-    });
+    // this.users.forEach((item, i) => {
+    //   if (item.id == newUser.id) {
+    //     this.users.splice(i, 1, newUser);
+    //   }
+    // });
 
     this.isFormOpen = false;
     this.isAddUser = false;
@@ -115,29 +104,51 @@ export class CrudServiceService {
   }
 
   deleteUser(id: number) {
-    this.users.filter((item, i) => {
-      if (id === item.id) {
-        this.users.splice(i, 1);
-      }
-    });
+    const updatedUsers = this.originalUsersData.value.filter(
+      //當id不等於item.id會過濾掉
+      (item) => item.id !== id
+    );
+    //用next發送刪除過後的資料回所有訂閱
+    this.originalUsersData.next(updatedUsers);
   }
 
   calcTotal() {
     let num = 0;
-    this.users.forEach((item) => {
+    this.originalUsersData.value.forEach((item) => {
       num += item.salary;
     });
-    this.total = num;
+    return num;
   }
 
-  filterBySearch() {
-    if (this.searchValue === '') {
-      this.users = [...this.originalUsers];
-    } else {
-      const filteredUsers = this.users.filter((item) => {
-        return item.name.toLowerCase().includes(this.searchValue.toLowerCase());
-      });
-      this.users = filteredUsers;
+  updateTotal() {
+    const total = this.calcTotal();
+    this.totalSalary.next(total);
+  }
+
+  filterBySearch(txt: string) {
+    if (txt === '') {
+      this.originalUsersData.next(this.originalUsersData.value);
+      return;
     }
+
+    const matchData = this.originalUsersData.value.filter((item) => {
+      return item.name.includes(txt);
+    });
+
+    this.originalUsersData.next(matchData);
+  }
+
+  toggleFormOpen() {
+    this.isFormOpen = !this.isFormOpen;
+    this.userForm.reset();
+  }
+
+  toggleIsAddUser() {
+    this.isAddUser = true;
+  }
+
+  toggleIsEditUser(item: any) {
+    this.isAddUser = false;
+    this.userForm.patchValue(item);
   }
 }

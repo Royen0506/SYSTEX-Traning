@@ -1,1 +1,29 @@
-<p>crud-form works!</p>
+<form [formGroup]="userForm" *ngIf="dataService.isFormOpen" (ngSubmit)="onSubmit()">
+    <div class="h3 text-start" *ngIf="dataService.isAddUser; else editUser">Add User</div>
+    <ng-template #editUser>
+        <div class="h3 text-start">Edit User</div>
+    </ng-template>
+    <div class="mb-3 text-start">
+        <label for="userName" class="form-label fw-bold">Name</label>
+        <input formControlName="name" type="text" class="form-control" id="userName" placeholder="Edit name">
+    </div>
+    <div class="mb-3 text-start">
+        <label for="userCountry" class="form-label fw-bold">Country</label>
+        <input formControlName="country" type="text" class="form-control" id="userCountry" placeholder="Edit country">
+    </div>
+    <div class="mb-3 text-start">
+        <label for="userSalary" class="form-label fw-bold">Salary</label>
+        <input type="number" formControlName="salary" class="form-control" id="userSalary" placeholder="Edit Salary">
+    </div>
+    <div class="mb-3 text-start">
+        <label for="userEmail" class="form-label fw-bold">Email</label>
+        <input formControlName="email" type="email" class="form-control" id="userEmail" placeholder="Edit Email">
+    </div>
+    <div class="text-start">
+        <button *ngIf="dataService.isAddUser; else EditUserButton" class="btn btn-primary me-2">Add
+            User</button>
+        <ng-template #EditUserButton><button class="btn btn-primary me-2">Save
+                Change</button></ng-template>
+        <button class=" btn btn-primary">Cancel</button>
+    </div>
+</form>
