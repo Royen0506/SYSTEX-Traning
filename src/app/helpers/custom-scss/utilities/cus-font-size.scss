@@ -1,0 +1,38 @@
+.custom-font-regular {
+    font-size: 20px;
+}
+
+.customs-banner-title {
+    font-size: $font-size-base * 2;
+}
+
+.custom-banner-font {
+    font-size: $font-size-base * 1.25;
+}
+
+.custom-font-20 {
+    font-size: $font-size-base * 1.25;
+}
+
+.custom-font-copyright {
+    font-size: $font-size-base * .875;
+}
+
+.custom-line-height-30 {
+    line-height: 1.875rem;
+}
+
+.custom-line-height-36 {
+    line-height: 2.25rem;
+}
+
+
+@include media-breakpoint-up(lg) {
+    .customs-banner-title {
+        font-size: $font-size-base * 2.5;
+    }
+
+    .custom-banner-font {
+        font-size: $font-size-base * 1.5;
+    }
+}

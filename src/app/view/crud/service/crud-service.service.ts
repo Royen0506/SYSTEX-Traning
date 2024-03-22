@@ -7,8 +7,9 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class CrudServiceService {
   public originalUsersData = new BehaviorSubject<any[]>([]);
+  public UsersData = new BehaviorSubject<any[]>([]);
   public totalSalary = new BehaviorSubject<number>(0);
-  originalUsers$ = this.originalUsersData.asObservable();
+  public originalUsers$ = this.originalUsersData.asObservable();
 
   public isFormOpen: boolean = false;
   public isAddUser: boolean = false;
@@ -62,7 +63,9 @@ export class CrudServiceService {
         email: 'qakyssaxisu-3687@yopmail.com',
       },
     ]);
-
+    
+    //淺拷貝複製一份資料供搜尋用
+    this.UsersData.next([...this.originalUsersData.value])
     this.updateTotal();
   }
 
@@ -84,20 +87,6 @@ export class CrudServiceService {
   }
 
   confirmEdit() {
-    const newUser = {
-      id: this.userForm.get('id')?.value ?? 0,
-      name: this.userForm.get('name')?.value ?? '',
-      country: this.userForm.get('country')?.value ?? '',
-      salary: this.userForm.get('salary')?.value ?? 0,
-      email: this.userForm.get('email')?.value ?? '',
-    };
-
-    // this.users.forEach((item, i) => {
-    //   if (item.id == newUser.id) {
-    //     this.users.splice(i, 1, newUser);
-    //   }
-    // });
-
     this.isFormOpen = false;
     this.isAddUser = false;
     this.userForm.reset();
@@ -126,20 +115,20 @@ export class CrudServiceService {
   }
 
   filterBySearch(txt: string) {
-    if (txt === '') {
-      this.originalUsersData.next(this.originalUsersData.value);
+    if (txt.trim() === '') {
+      this.originalUsersData.next(this.UsersData.value);
       return;
     }
-
-    const matchData = this.originalUsersData.value.filter((item) => {
-      return item.name.includes(txt);
-    });
+    //用淺拷貝的userData篩選，並next回originalUsersData
+    const matchData = this.UsersData.value.filter((item) => {
+    return item.name.toLowerCase().match(txt.trim().toLowerCase());
+  });
 
     this.originalUsersData.next(matchData);
   }
 
   toggleFormOpen() {
-    this.isFormOpen = !this.isFormOpen;
+    this.isFormOpen = true;
     this.userForm.reset();
   }
 

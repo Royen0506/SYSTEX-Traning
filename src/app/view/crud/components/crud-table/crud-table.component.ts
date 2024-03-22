@@ -9,7 +9,7 @@ import { CrudServiceService } from '../../service/crud-service.service';
 export class CrudTableComponent {
   // 資料狀態
   users: any;
-  total: number | any = 0;
+  total: number = 0;
   id: number = 0;
   searchValue: string = '';
 

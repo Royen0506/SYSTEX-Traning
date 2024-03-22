@@ -8,6 +8,8 @@ import { UiTrainingComponent } from './view/ui-training/ui-training.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CrudTableComponent } from './view/crud/components/crud-table/crud-table.component';
 import { CrudFormComponent } from './view/crud/components/crud-form/crud-form.component';
+import { CommonModule } from '@angular/common';
+
 
 @NgModule({
   declarations: [
@@ -17,7 +19,7 @@ import { CrudFormComponent } from './view/crud/components/crud-form/crud-form.co
     CrudTableComponent,
     CrudFormComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, FormsModule],
+  imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, FormsModule,CommonModule],
   providers: [],
   bootstrap: [AppComponent],
 })

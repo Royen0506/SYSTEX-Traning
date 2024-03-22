@@ -9,4 +9,6 @@ import { routes } from './app-routing.module';
 export class AppComponent {
   title = 'SYSTEX-Training';
   routes = routes
+  isUiTraining:boolean = false
+
 }

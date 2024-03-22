@@ -1,7 +1,18 @@
 @import "bootstrap/scss/functions";
-// @import "helpers/variables.scss";
+@import "helpers/variables.scss";
+@import "helpers/variables-dark.scss";
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/root";
-// @import "helpers/utilities.scss";
+@import "helpers/utilities.scss";
+
+//自訂樣式
+@import "helpers/custom-scss/utilities/cus-font-size.scss";
+
+//自訂元件
+@import "helpers/custom-scss/components/nav-cart-badge";
+@import "helpers/custom-scss/components/banner";
+@import "helpers/custom-scss/components/mobile-animation";
+@import "helpers/custom-scss/components/subscribe-bg-img";
+@import "helpers/custom-scss/components/banner-btn"

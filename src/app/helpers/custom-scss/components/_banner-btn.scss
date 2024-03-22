@@ -1,0 +1,9 @@
+.banner-btn {
+    transition: all 0.2s ease-in-out !important;
+
+    &:hover {
+        background-color: $primary !important;
+        color: $white !important;
+        border: $primary 1px solid;
+    }
+}
