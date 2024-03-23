@@ -137,7 +137,6 @@ export class CrudServiceService {
   }
 
   toggleIsEditUser(item: any) {
-    this.isAddUser = false;
     this.userForm.patchValue(item);
   }
 }

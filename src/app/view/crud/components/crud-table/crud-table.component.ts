@@ -53,6 +53,7 @@ export class CrudTableComponent {
   }
 
   toggleIsEditUser(item: any) {
+    this.dataService.isAddUser = false
     this.dataService.toggleIsEditUser(item);
   }
 }

@@ -37,19 +37,23 @@
     </div>
     <div class="mb-3 text-start">
         <label for="userEmail" class="form-label fw-bold">Email</label>
-        <input formControlName="email" type="email" class="form-control" id="userEmail" placeholder="Edit Email">
+        <input (input)="isEmailHasRegister()" formControlName="email" type="email" class="form-control" id="userEmail"
+            placeholder="Edit Email">
         <div class="alert alert-danger mt-2" role="alert"
             *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
             Please input email
         </div>
+        <div class="alert alert-danger mt-2" role="alert" *ngIf="isUserEmailHasRegister">
+            This email has been registered by other user
+        </div>
     </div>
     <div class="text-start">
         <button
-            [disabled]="userForm.get('name')?.invalid || userForm.get('country')?.invalid || userForm.get('salary')?.invalid || userForm.get('email')?.invalid"
+            [disabled]="userForm.get('name')?.invalid || userForm.get('country')?.invalid || userForm.get('salary')?.invalid || userForm.get('email')?.invalid || isUserEmailHasRegister == true"
             type="submit" *ngIf="dataService.isAddUser; else EditUserButton" class="btn custom-btn-primary me-2">Add
             User</button>
         <ng-template #EditUserButton><button
-                [disabled]="userForm.get('name')?.invalid || userForm.get('country')?.invalid || userForm.get('salary')?.invalid || userForm.get('email')?.invalid"
+                [disabled]="userForm.get('name')?.invalid || userForm.get('country')?.invalid || userForm.get('salary')?.invalid || userForm.get('email')?.invalid || isUserEmailHasRegister == true"
                 class="btn custom-btn-primary me-2">Save
                 Change</button></ng-template>
         <button type="button" class=" btn custom-btn-primary" (click)="dataService.isFormOpen = false">Cancel</button>

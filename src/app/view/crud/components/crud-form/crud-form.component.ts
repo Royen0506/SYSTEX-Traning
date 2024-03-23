@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CrudServiceService } from '../../service/crud-service.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { retry } from 'rxjs';
 
 @Component({
   selector: 'app-crud-form',
@@ -15,6 +16,7 @@ export class CrudFormComponent {
     salary: new FormControl<number>(0,Validators.required),
     email: new FormControl<string>('',[Validators.email,Validators.required]),
   });
+  isUserEmailHasRegister:boolean=false
 
   constructor(public dataService: CrudServiceService) {}
 
@@ -36,5 +38,19 @@ export class CrudFormComponent {
       this.dataService.isFormOpen = false;
       this.userForm.reset();
     }
+
+  isEmailHasRegister(){
+      const emailValue = this.userForm.get('email')?.value;
+      const userId = this.userForm.get('id')?.value
+      this.isUserEmailHasRegister = false
+      this.dataService.originalUsersData.value.forEach(item =>{
+        if(item.email == emailValue && this.dataService.isAddUser == true){
+          this.isUserEmailHasRegister = true
+          }else if(item.email == emailValue && item.id != userId){
+          this.isUserEmailHasRegister = true
+          }
+      }) 
+      
+  }
   
 }
