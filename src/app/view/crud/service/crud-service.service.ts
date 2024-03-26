@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
+
 export class CrudServiceService {
   public originalUsersData = new BehaviorSubject<any[]>([]);
   public UsersData = new BehaviorSubject<any[]>([]);
@@ -64,14 +65,23 @@ export class CrudServiceService {
       },
     ]);
     
-    //淺拷貝複製一份資料供搜尋用
     this.UsersData.next([...this.originalUsersData.value])
     this.updateTotal();
   }
 
   // 函式/方法
   addUser(data: any) {
-    this.originalUsersData.value.push(data);
+    // if(this.isAddUser == false){
+    //   this.originalUsersData.value.push(data);
+    // }
+    // else{
+    //   this.UsersData.value.push(data)
+    // }
+    
+    this.UsersData.value.push(data);
+    this.originalUsersData.next([...this.UsersData.value]);
+
+    this.filterBySearch(this.searchValue)
     this.updateTotal();
   }
 
@@ -83,23 +93,28 @@ export class CrudServiceService {
         return item;
       }
     });
-    this.originalUsersData.next(updatedUsers);
-  }
+    this.originalUsersData.next([...updatedUsers]);
 
-  confirmEdit() {
-    this.isFormOpen = false;
-    this.isAddUser = false;
-    this.userForm.reset();
+    const updatedUsersData = this.UsersData.value.map((item) => {
+      const updatedUser = updatedUsers.find((u) => u.id === item.id);
+        return updatedUser ? updatedUser : item;
+      });
+    this.UsersData.next([...updatedUsersData]);
+    this.filterBySearch(this.searchValue)
+    
   }
 
   deleteUser(id: number) {
-    const updatedUsers = this.originalUsersData.value.filter(
-      //當id不等於item.id會過濾掉
-      (item) => item.id !== id
-    );
-    //用next發送刪除過後的資料回所有訂閱
-    this.originalUsersData.next(updatedUsers);
-  }
+    // 找到要刪除的索引
+    const index = this.UsersData.value.findIndex((item) => item.id === id);
+    // 從 UsersData 中刪除
+    this.UsersData.value.splice(index, 1);
+    // 更新 originalUsersData
+    this.originalUsersData.next([...this.UsersData.value]);
+    this.filterBySearch(this.searchValue)
+    this.isFormOpen = false;
+  
+}
 
   calcTotal() {
     let num = 0;
@@ -115,16 +130,19 @@ export class CrudServiceService {
   }
 
   filterBySearch(txt: string) {
+    this.searchValue = txt
     if (txt.trim() === '') {
       this.originalUsersData.next(this.UsersData.value);
       return;
     }
     //用淺拷貝的userData篩選，並next回originalUsersData
     const matchData = this.UsersData.value.filter((item) => {
-    return item.name.toLowerCase().match(txt.trim().toLowerCase());
-  });
+      return item.name.toLowerCase().includes(txt.trim().toLowerCase());
+    });
+    
+    this.originalUsersData.next([...matchData]);
 
-    this.originalUsersData.next(matchData);
+  
   }
 
   toggleFormOpen() {

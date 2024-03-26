@@ -1,9 +1,9 @@
 .banner-btn {
-    transition: all 0.2s ease-in-out !important;
+    transition: all 0.1s ease-in-out !important;
 
     &:hover {
-        background-color: $primary !important;
+        background-color: rgba(255, 255, 255, 0.2) !important;
         color: $white !important;
-        border: $primary 1px solid;
+        border: $white 1px solid;
     }
 }

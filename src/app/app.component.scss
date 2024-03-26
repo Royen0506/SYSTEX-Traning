@@ -9,10 +9,16 @@
 
 //自訂樣式
 @import "helpers/custom-scss/utilities/cus-font-size.scss";
+@import "helpers/custom-scss/utilities/cus-container.scss";
 
 //自訂元件
 @import "helpers/custom-scss/components/nav-cart-badge";
 @import "helpers/custom-scss/components/banner";
 @import "helpers/custom-scss/components/mobile-animation";
 @import "helpers/custom-scss/components/subscribe-bg-img";
-@import "helpers/custom-scss/components/banner-btn"
+@import "helpers/custom-scss/components/banner-btn";
+@import "helpers/custom-scss/components/card-hover";
+
+.container {
+    max-width: 1110px !important;
+}

@@ -37,11 +37,20 @@ export class CrudTableComponent {
   }
 
   deleteUser(id: number) {
+    this.dataService.userForm.reset()
     this.dataService.deleteUser(id);
   }
 
   filterBySearch() {
-    this.dataService.filterBySearch(this.searchValue.toLocaleLowerCase());
+    this.dataService.userForm.reset()
+    this.dataService.isFormOpen =false
+    //強制將全型字改半型
+    const strPreprocessing = (str:string) => {
+      return str.replace(/[\uff01-\uff5e]/g, function (ch) {
+        return String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
+      }).replace(/\u3000/g, ' ')
+    }
+    this.dataService.filterBySearch(strPreprocessing(this.searchValue.toLocaleLowerCase()));
   }
 
   toggleForm() {
@@ -56,4 +65,6 @@ export class CrudTableComponent {
     this.dataService.isAddUser = false
     this.dataService.toggleIsEditUser(item);
   }
+
+
 }

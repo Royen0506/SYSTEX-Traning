@@ -20,7 +20,7 @@
     <div class="ms-auto align-self-center">
         <label class="text-nowrap d-flex align-items-center">Search by name:<input type="text" class="form-control ms-1"
                 placeholder="Type name to search" aria-label="Username" [(ngModel)]="searchValue"
-                (input)="filterBySearch()" aria-describedby="basic-addon1"></label>
+                (keyup)="filterBySearch()" aria-describedby="basic-addon1"></label>
     </div>
 </div>
 
@@ -46,11 +46,14 @@
             <td><button class="btn btn-danger" (click)="deleteUser(item.id)">Delete</button></td>
         </tr>
     </tbody>
-    <tfoot>
+    <tfoot [ngClass]="{'table-light': users.length%2==0}">
         <tr>
             <th scope="col" class="text-start border-bottom-0">Total</th>
             <th scope="col" class="text-start border-bottom-0"></th>
             <th scope="col" class="text-center border-bottom-0">{{total}}</th>
+            <th scope="col" class="border-bottom-0"></th>
+            <th scope="col" class="border-bottom-0"></th>
+            <th scope="col" class="border-bottom-0"></th>
         </tr>
     </tfoot>
 </table>
