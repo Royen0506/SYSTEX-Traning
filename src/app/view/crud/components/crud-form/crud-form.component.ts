@@ -37,6 +37,7 @@ export class CrudFormComponent {
       const userName = this.strPreprocessing(this.userForm.get('name')?.value)
       if (this.dataService.isAddUser) {
         const newId = this.dataService.originalUsersData.value.length + 1;
+        console.log(newId)
         this.userForm.patchValue({ id: newId });
         this.userForm.patchValue({ name: userName });
         this.dataService.addUser(this.userForm.value);
@@ -55,19 +56,16 @@ export class CrudFormComponent {
       this.isUserEmailHasRegister = false
       
       this.dataService.originalUsersData.value.forEach(item =>{
-        if(item.email == emailValue && this.dataService.isAddUser == true){
-          this.isUserEmailHasRegister = true
-          }else if(item.email == emailValue && item.id != userId){
-          this.isUserEmailHasRegister = true
-          }
+       if ((item.email === emailValue && this.dataService.isAddUser) ||(item.email === emailValue && item.id !== userId)) {
+        this.isUserEmailHasRegister = true;
+        }
       }) 
      
       this.dataService.UsersData.value.forEach(item =>{
-        if(item.email == emailValue && this.dataService.isAddUser == true){
-          this.isUserEmailHasRegister = true
-          }else if(item.email == emailValue && item.id != userId){
-          this.isUserEmailHasRegister = true
-          }
+        if ((item.email === emailValue && this.dataService.isAddUser) ||
+          (item.email === emailValue && item.id !== userId)) {
+        this.isUserEmailHasRegister = true;
+         }
       }) 
   }
   

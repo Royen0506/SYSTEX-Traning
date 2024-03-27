@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 
 export class CrudServiceService {
+  //宣告變數為BehaviorSubject
   public originalUsersData = new BehaviorSubject<any[]>([]);
   public UsersData = new BehaviorSubject<any[]>([]);
   public totalSalary = new BehaviorSubject<number>(0);
@@ -71,17 +72,17 @@ export class CrudServiceService {
 
   // 函式/方法
   addUser(data: any) {
-    // if(this.isAddUser == false){
-    //   this.originalUsersData.value.push(data);
-    // }
-    // else{
-    //   this.UsersData.value.push(data)
-    // }
+    data.id = this.UsersData.value.length+1
+    console.log(data)
+    if(!this.isAddUser){
+      this.originalUsersData.value.push(data);
+    }
+    else{
+      this.UsersData.value.push(data)
+    }
     
-    this.UsersData.value.push(data);
     this.originalUsersData.next([...this.UsersData.value]);
-
-    this.filterBySearch(this.searchValue)
+    this.filterBySearch(this.searchValue);
     this.updateTotal();
   }
 
@@ -93,13 +94,14 @@ export class CrudServiceService {
         return item;
       }
     });
-    this.originalUsersData.next([...updatedUsers]);
 
     const updatedUsersData = this.UsersData.value.map((item) => {
       const updatedUser = updatedUsers.find((u) => u.id === item.id);
-        return updatedUser ? updatedUser : item;
+        return updatedUser || item
       });
     this.UsersData.next([...updatedUsersData]);
+
+    this.originalUsersData.next([...updatedUsers]);
     this.filterBySearch(this.searchValue)
     
   }
@@ -130,7 +132,7 @@ export class CrudServiceService {
   }
 
   filterBySearch(txt: string) {
-    this.searchValue = txt
+    this.searchValue = txt.trim().toLowerCase()
     if (txt.trim() === '') {
       this.originalUsersData.next(this.UsersData.value);
       return;
@@ -141,8 +143,7 @@ export class CrudServiceService {
     });
     
     this.originalUsersData.next([...matchData]);
-
-  
+    
   }
 
   toggleFormOpen() {
