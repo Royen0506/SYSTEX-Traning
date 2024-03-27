@@ -73,14 +73,7 @@ export class CrudServiceService {
   // 函式/方法
   addUser(data: any) {
     data.id = this.UsersData.value.length+1
-    console.log(data)
-    if(!this.isAddUser){
-      this.originalUsersData.value.push(data);
-    }
-    else{
-      this.UsersData.value.push(data)
-    }
-    
+    this.UsersData.value.push(data)
     this.originalUsersData.next([...this.UsersData.value]);
     this.filterBySearch(this.searchValue);
     this.updateTotal();
@@ -94,6 +87,7 @@ export class CrudServiceService {
         return item;
       }
     });
+    this.originalUsersData.next([...updatedUsers]);
 
     const updatedUsersData = this.UsersData.value.map((item) => {
       const updatedUser = updatedUsers.find((u) => u.id === item.id);
@@ -101,7 +95,6 @@ export class CrudServiceService {
       });
     this.UsersData.next([...updatedUsersData]);
 
-    this.originalUsersData.next([...updatedUsers]);
     this.filterBySearch(this.searchValue)
     
   }
@@ -115,20 +108,19 @@ export class CrudServiceService {
     this.originalUsersData.next([...this.UsersData.value]);
     this.filterBySearch(this.searchValue)
     this.isFormOpen = false;
+  }
   
-}
-
   calcTotal() {
     let num = 0;
     this.originalUsersData.value.forEach((item) => {
       num += item.salary;
     });
+    this.totalSalary.next(num);
     return num;
   }
-
+  
   updateTotal() {
     const total = this.calcTotal();
-    this.totalSalary.next(total);
   }
 
   filterBySearch(txt: string) {
@@ -137,7 +129,7 @@ export class CrudServiceService {
       this.originalUsersData.next(this.UsersData.value);
       return;
     }
-    //用淺拷貝的userData篩選，並next回originalUsersData
+    //用淺拷貝的userData篩選，並next傳遞
     const matchData = this.UsersData.value.filter((item) => {
       return item.name.toLowerCase().includes(txt.trim().toLowerCase());
     });
